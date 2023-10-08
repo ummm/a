@@ -1,0 +1,25 @@
+name: openapi updated
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'config/openapi/admin/bundle.yaml'
+
+jobs:
+  dispatch-openapi-updated:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: getsentry/action-github-app-token@v2
+        id: get-token
+        with:
+          app_id: ${{ secrets.GH_APP_ID }}
+          private_key: ${{ secrets.GH_APP_PRIVATE }}
+
+      - uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ steps.get-token.outputs.token }}
+          repository: ummm/b
+          event-type: openapi-updated
+          client-payload: '{"author": "${{ github.actor }}"}'
